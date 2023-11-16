@@ -14,8 +14,8 @@ let package = Package(
   ],
   dependencies: [
     // Dependencies declare other packages that this package depends on.
-    //.package(url: "https://github.com/AppsFlyerSDK/AppsFlyerFramework", from: "6.12.2"),
-    //.package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.18.0")
+    .package(url: "https://github.com/AppsFlyerSDK/AppsFlyerFramework", from: "6.12.2"),
+    .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "10.18.0")
   ],
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,8 +23,9 @@ let package = Package(
     .target(
       name: "TrackingSDK",
       dependencies: [
-        //.product(name: "AppsFlyerLib", package: "AppsFlyerFramework"),
-        //.product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
-      ])
+        .product(name: "AppsFlyerLib", package: "AppsFlyerFramework"),
+        .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
+      ]
+    )
   ]
 )
