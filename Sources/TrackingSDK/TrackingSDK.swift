@@ -16,7 +16,7 @@ import AdSupport
 /// import TrackingSDK
 /// ```
 /// - Warning: Available for Swift 5.3, Xcode 12.5 (macOS Big Sur). Support from iOS 13.0 or newer.
-public class TrackingSDK: NSObject {
+public class TrackingSDK {
   public static var shared = TrackingSDK()
   
   public func initialize(devKey: String, appID: String, timeout: Double? = nil) {
