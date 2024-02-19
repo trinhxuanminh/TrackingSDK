@@ -10,18 +10,24 @@ import AppTrackingTransparency
 import AppsFlyerLib
 import FirebaseAnalytics
 import AdSupport
+import PurchaseConnector
+import StoreKit
 
 /// Supports MMP AppsFlyer and ATT Tracking integration.
 /// ```
 /// import TrackingSDK
 /// ```
 /// - Warning: Available for Swift 5.3, Xcode 12.5 (macOS Big Sur). Support from iOS 13.0 or newer.
-public class TrackingSDK {
+public class TrackingSDK: NSObject {
   public static var shared = TrackingSDK()
   
   public func initialize(devKey: String, appID: String, timeout: Double? = nil) {
     AppsFlyerLib.shared().appsFlyerDevKey = devKey
     AppsFlyerLib.shared().appleAppID = appID
+    
+    PurchaseConnector.shared().purchaseRevenueDelegate = self
+    PurchaseConnector.shared().purchaseRevenueDataSource = self
+    PurchaseConnector.shared().autoLogPurchaseRevenue = .autoRenewableSubscriptions
     
     if let timeout {
       AppsFlyerLib.shared().waitForATTUserAuthorization(timeoutInterval: timeout)
@@ -89,8 +95,29 @@ public class TrackingSDK {
   }
 }
 
+extension TrackingSDK: PurchaseRevenueDataSource, PurchaseRevenueDelegate {
+  public func didReceivePurchaseRevenueValidationInfo(_ validationInfo: [AnyHashable : Any]?,
+                                                      error: Error?
+  ) {
+    print("PurchaseRevenueDelegate: \(String(describing: validationInfo))")
+    print("PurchaseRevenueDelegate: \(String(describing: error))")
+  }
+  
+  public func purchaseRevenueAdditionalParameters(for products: Set<SKProduct>,
+                                                  transactions: Set<SKPaymentTransaction>?
+  ) -> [AnyHashable : Any]? {
+    return [
+      "additionalParameters": [
+        "param1": "value1",
+        "param2": "value2"
+      ]
+    ]
+  }
+}
+
 extension TrackingSDK {
   @objc private func sendLaunch() {
     AppsFlyerLib.shared().start()
+    PurchaseConnector.shared().startObservingTransactions()
   }
 }
