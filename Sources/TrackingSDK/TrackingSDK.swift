@@ -12,6 +12,7 @@ import FirebaseAnalytics
 import AdSupport
 import PurchaseConnector
 import StoreKit
+import AppsFlyerAdRevenue
 
 /// Supports MMP AppsFlyer and ATT Tracking integration.
 /// ```
@@ -27,7 +28,7 @@ public class TrackingSDK: NSObject {
     
     PurchaseConnector.shared().purchaseRevenueDelegate = self
     PurchaseConnector.shared().purchaseRevenueDataSource = self
-    PurchaseConnector.shared().autoLogPurchaseRevenue = .autoRenewableSubscriptions
+    PurchaseConnector.shared().autoLogPurchaseRevenue = [.autoRenewableSubscriptions, .inAppPurchases]
     
     if let timeout {
       AppsFlyerLib.shared().waitForATTUserAuthorization(timeoutInterval: timeout)
@@ -49,6 +50,8 @@ public class TrackingSDK: NSObject {
       print("TrackingSDK: \(String(describing: dictionary))")
       LogEventManager.shared.log(event: .connectedAppsFlyer)
     })
+    
+    AppsFlyerAdRevenue.start()
     
     if #available(iOS 14, *),
        ATTrackingManager.trackingAuthorizationStatus == .authorized {
